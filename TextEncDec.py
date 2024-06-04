@@ -30,7 +30,7 @@ def trouverPQ(n):
                 break
     return p, q 
 
-# Déterminer le d (exposant privé)
+# Déterminer le d (exposant privé)( pas importance )
 def leD(n):
     dBinaire = secrets.randbits(3072)
     nBits = n.bit_length()
@@ -119,6 +119,21 @@ def Crypter(message_text, e, n):
         print(f"Cryptage error : {ex}")
         return "Cryptage error."
 
+# fontion pour decrypter 
+def Decrypter (message, d, n):
+    try:
+        # convertir le message en ASCII 
+        asciiMessage = asciiEncode(message)
+        for i in range(len(message)):
+            asciiMessage[i] = pow(asciiMessage[i], d, n)
+        #convertir ASCII en texte 
+        textDecrypter = asciiToLettre(asciiMessage)
+        return textDecrypter 
+    except Exception as ex:
+        print(f"Decryptage Error! : {ex}")
+        return "Decryptage error"
+    
+    
 
 
 # Interface graphique 
@@ -135,7 +150,7 @@ message = tk.Entry(root, width=50)
 message.pack()
 
 # Label pour la cle publique
-labelCle = tk.Label(root, text="Enter the public key (e, n) : ")
+labelCle = tk.Label(root, text="Enter the public/private key (e/d, n) : ")
 labelCle.pack()
 
 frameCle = tk.Frame(root)
@@ -156,10 +171,20 @@ def affichageCry():
     textCrypted = Crypter(message.get(), int(E.get()), int(N.get()))
     labelResult.config(text="Crypted text : " + textCrypted)
 
+# affichage de texte decrypter 
+def affichageDec():
+    textDecrypted = Decrypter(message.get(), int(E.get()), int(N.get()))
+    labelResult.config(text="Decrypted text :"+ textDecrypted )
+    
 # Button pour Crypter
 buttonCrypter = tk.Button(root, text="Crypter", width=10, height=2, command=affichageCry)
 buttonCrypter.pack()
 buttonCrypter.place(x=50, y=120)
+
+# Button pour Decrypter 
+buttonDecrypter = tk.Button(root, text="Decrypter", width= 10, height=2, command=affichageDec)
+buttonDecrypter.pack()
+buttonDecrypter.place(x=200, y=120)
 
 # Label pour afficher le résultat
 labelResult= tk.Label(root, text="")
